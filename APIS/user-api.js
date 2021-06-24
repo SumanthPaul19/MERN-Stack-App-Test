@@ -132,11 +132,52 @@ userApi.post("/login", expressErrorHandler( async(req,res,next)=>{
         }
         else{
             //create and send token
-            let token= await jwt.sign({username:credentials.username},'abcdef',{expiresIn: 10 })
+            let token= await jwt.sign({username:credentials.username},process.env.SECRET,{expiresIn: 10 })
             //send token to client
             res.send({message:"Login success",token:token,username:credentials.username})
         }
     }
+}))
+
+
+//add to cart
+userApi.post("/addtocart",expressErrorHandler(async(req,res,next)=>{
+    let userCartCollectionObj=req.app.get("userCartCollectionObj")
+
+    //get user cart obj
+    let userCartObj=req.body;
+
+    //find user in usercartcollection
+    let userInCart=await userCartCollectionObj.findOne({username:userCartObj.username})
+
+    //if user not existed in cart
+    if(userInCart===null){
+        //new usercartObj
+        let products=[];
+        products.push(userCartObj.productObj)
+        let newUserCartObj={username:userCartObj.username,products:products};
+
+        //console.log(newUserCartObj)
+        //insert
+        await userCartCollectionObj.insertOne(newUserCartObj)
+        res.send({message:"Product added to cart"})
+    }
+    //if user already existed in cart
+    else{
+        userInCart.products.push(userCartObj.productObj)
+        //update
+        await userCartCollectionObj.updateOne({username:userCartObj.username},{$set:{...userInCart}})
+        res.send({message:"Product is added to cart"})
+    }
+}))
+
+//get products 
+userApi.get("/getproducts/:username",expressErrorHandler(async(req,res,next)=>{
+    let userCartCollectionObj=req.app.get("userCartCollectionObj")
+
+    let un=req.params.username;
+    let cartObj=await userCartCollectionObj.findOne({username:un})
+    res.send({message:cartObj})
 }))
 
 
@@ -148,3 +189,4 @@ userApi.get('/testing', checkToken, (req,res,next)=>{
 
 //export
 module.exports=userApi;
+

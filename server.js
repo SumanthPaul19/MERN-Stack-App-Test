@@ -2,6 +2,7 @@
 const exp=require('express')
 const app=exp();
 const path=require("path")
+require('dotenv').config()
 
 //connect frontend and backend
 app.use(exp.static(path.join(__dirname,'./build/')))
@@ -32,7 +33,9 @@ const mc=require("mongodb").MongoClient;
 //database Url
 //const databaseUrl="mongodb+srv://sumanthpaul:sumanthpaul@cluster0.uu9fv.mongodb.net/Trainingdb?retryWrites=true&w=majority"
 
-const databaseUrl="mongodb://sumanthpaul:sumanthpaul@cluster0-shard-00-00.uu9fv.mongodb.net:27017,cluster0-shard-00-01.uu9fv.mongodb.net:27017,cluster0-shard-00-02.uu9fv.mongodb.net:27017/Trainingdb?ssl=true&replicaSet=atlas-y8k7y4-shard-0&authSource=admin&retryWrites=true&w=majority"
+//const databaseUrl="mongodb://sumanthpaul:sumanthpaul@cluster0-shard-00-00.uu9fv.mongodb.net:27017,cluster0-shard-00-01.uu9fv.mongodb.net:27017,cluster0-shard-00-02.uu9fv.mongodb.net:27017/Trainingdb?ssl=true&replicaSet=atlas-y8k7y4-shard-0&authSource=admin&retryWrites=true&w=majority"
+
+const databaseUrl=process.env.DATABASE_URL
 
 //connect to db
 mc.connect(databaseUrl,{useNewUrlParser:true,useUnifiedTopology:true},(err,client)=>{
@@ -47,11 +50,13 @@ mc.connect(databaseUrl,{useNewUrlParser:true,useUnifiedTopology:true},(err,clien
         let userCollectionObj=databaseObj.collection("usercollection")
         let productCollectionObj=databaseObj.collection("productcollection")
         let adminCollectionObj=databaseObj.collection("admincollection")
+        let userCartCollectionObj=databaseObj.collection("usercartcollection")
 
         //sharing collection to API's
         app.set("userCollectionObj",userCollectionObj)
         app.set("productCollectionObj",productCollectionObj)
         app.set("adminCollectionObj",adminCollectionObj)
+        app.set("userCartCollectionObj",userCartCollectionObj)
 
         console.log("Database connected...")
     }
@@ -72,5 +77,6 @@ app.use((err,req,res,next)=>{
 
 
 //assign port number
-const port=8080;
+//const port=8080; OR
+const port=process.env.PORT;
 app.listen(port,()=>console.log(`Server running on port ${port}...`))

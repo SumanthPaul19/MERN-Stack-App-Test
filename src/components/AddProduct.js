@@ -57,10 +57,10 @@ export default function AddProduct(){
                     {errors.brand && <p className="text-danger">*please enter brand</p>}
 
                     {/* TEXT AREA */}
-                    <label htmlFor="ta">Description</label>
-                    <textarea id="ta" {...register('textarea',{required:true})} className="form-control mb-3" />
+                    <label htmlFor="ta">Prouct description</label>
+                    <textarea id="ta" {...register('productdescription',{required:true})} className="form-control mb-3" />
                     {/* text area validation */}
-                    {errors.textarea && <p className="text-danger">*Description is required</p>}
+                    {errors.productdescription && <p className="text-danger">*Description is required</p>}
 
                     {/* PHOTO */}
                     <label htmlFor="">Product Image</label>

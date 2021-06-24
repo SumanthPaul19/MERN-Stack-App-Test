@@ -3,6 +3,7 @@ import ViewProduct from './ViewProduct'
 import AddProduct from './AddProduct'
 import {BrowserRouter,Link,Switch,Route} from 'react-router-dom'
 
+
 export default function AdminProfile(){
     return(
 
