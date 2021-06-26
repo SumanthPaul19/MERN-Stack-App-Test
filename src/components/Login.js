@@ -21,8 +21,8 @@ export default function Login(props){
             if(responseObj.message==='Login success'){
                 //save token to browser's local memory
                 localStorage.setItem("token",responseObj.token)
-                localStorage.setItem("user",JSON.stringify(responseObj.userObj))
                 localStorage.setItem("username",responseObj.username)
+                localStorage.setItem("user",JSON.stringify(responseObj.userObj))
 
                 //update state
                 props.setUserStatus(true)
@@ -30,6 +30,7 @@ export default function Login(props){
                 if(credentials.usertype==='user'){
                     //redirect to user profile page
                     history.push(`/userprofile/${responseObj.username}`)
+                    // history.push(`/viewproduct`)
                 }
                 if(credentials.usertype==='admin'){
                     //redirect to admin profilepage

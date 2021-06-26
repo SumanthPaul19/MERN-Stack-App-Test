@@ -1,7 +1,7 @@
 import axios from 'axios';
 import  { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import {BrowserRouter,Link,Switch,Route} from 'react-router-dom'
+import {  useParams, useRouteMatch } from 'react-router-dom';
+import {BrowserRouter,Link,Switch,Route, Redirect} from 'react-router-dom'
 import UserCart from './UserCart';
 import ViewProduct from './ViewProduct';
 
@@ -9,44 +9,62 @@ import ViewProduct from './ViewProduct';
 
 export default function UserProfile(){
 
+    let pathInfo=useRouteMatch();
+    let url=useParams();
+    let username=url.username;
+    let[stateChange,setStateChange]=useState(true)
+    let[userObj,setUserObj]=useState({});
+    //let[product,setProduct]=useState([]);
+    const [cartObj,setCartObj]=useState('');
+    let [count,setCount]=useState(0);
 
-    //function to make post to usercart api
+    useEffect(()=>{
+    
+        let userObj=JSON.parse(localStorage.getItem("user"))
+        setUserObj({...userObj})
+        // let userObj=JSON.parse(localStorage.getItem("user"))
+        // setUserObj({...userObj})
+    },[username])
+    
+
     const addProductToCart=(productObj)=>{
-        //get username from localstorage
         let username=localStorage.getItem("username")
-        //add username to product object
-        //productObj.username=username;
+
         let newObj={username,productObj}
+        console.log(newObj)
 
-        console.log("Product added by user is",newObj)
-
-        //make post req
         axios.post("/user/addtocart",newObj)
         .then(res=>{
             let responseObj=res.data;
             alert(responseObj.message)
+            setStateChange(!stateChange)
+            console.log(responseObj)
         })
         .catch(err=>{
             console.log("Error in adding to cart",err)
-            alert("Something went wrong")
+            alert("Something went wrong in adding to cart")
         })
     }
 
-
-
-    let params=useParams();
-    let [userObj,setUserObj]=useState({})
+    
 
     useEffect(()=>{
-        axios.get(`/user/getuser/${username}`)
+        let username=localStorage.getItem("username")
+        axios.get(`/user/getproducts/${username}`)
         .then(res=>{
-            userObj=res.data;
-            setUserObj({...userObj.message})
+            setCartObj(res.data.message)
+            if(res.data.message!==null){
+                setCount(res.data.message.products.length)
+            }
+            
         })
+        .catch(err=>{
+            console.log("Error on reading cart",err)
+            alert("Something went wrong in getting cart")
+        })
+    },[stateChange])
 
-    },[])
 
-    let username=params.username;
 
     return(
         <div className="text-center">
@@ -57,17 +75,20 @@ export default function UserProfile(){
                     <button type="submit" className="btn btn-info ms-5 mt-3">
                         <Link className="nav-link text-dark " to="/viewproduct">View Products</Link>
                     </button>
-                    <button type="submit" className="btn btn-success ms-5 mt-3">
-                        <Link className="nav-link text-white" to="/usercart">Cart</Link>
+                    <button type="submit" className="btn btn-dark ms-5 mt-3">
+                        <Link className="nav-link text-white" to="/usercart">Cart <span className="badge bg-light text-dark ms-1 me-1">{count}</span></Link>
                     </button>
                  </div>
 
                 <Switch>
                     <Route path="/viewproduct">
-                        <ViewProduct/>
+                        <ViewProduct addProductToCart={addProductToCart}/>
                     </Route>
                     <Route path="/usercart">
-                        <UserCart/>
+                        <UserCart cartObj={cartObj} />
+                    </Route>
+                    <Route path="/">
+                        <Redirect to="/viewproduct"/>
                     </Route>
                 </Switch>
             </BrowserRouter>

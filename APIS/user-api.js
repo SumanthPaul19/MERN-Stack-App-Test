@@ -134,7 +134,7 @@ userApi.post("/login", expressErrorHandler( async(req,res,next)=>{
             //create and send token
             let token= await jwt.sign({username:credentials.username},process.env.SECRET,{expiresIn: 10 })
             //send token to client
-            res.send({message:"Login success",token:token,username:credentials.username})
+            res.send({message:"Login success",token:token,username:credentials.username,userObj:user})
         }
     }
 }))

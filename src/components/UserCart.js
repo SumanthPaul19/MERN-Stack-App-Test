@@ -2,31 +2,21 @@ import axios from 'axios'
 import {useState,useEffect} from'react'
 
 
-function UserCart(){
+function UserCart(props){
 
-    const [cartObj,setCartObj]=useState('')
+    let cartObj=props.cartObj;
 
-    useEffect(()=>{
-        let username=localStorage.getItem("username")
 
-        axios.get(`/user/getproducts/${username}`)
-        .then(res=>{
-            setCartObj(res.data.message)
-        })
-        .catch(err=>{
-            console.log("Error in reading cart",err)
-            alert("Somethomh went wrong in getting cart")
-        })
-    },[])
 
 
     return(
-        <div>
+        <div>{
+            cartObj ?
             <table className="table table-bordered text-center w-75 mx-auto mt-5">
-                <thead>
-                    <th>ProductName</th>
-                    <th>Brand</th>
-                    <th>Image</th>
+                <thead className="bg-dark ">
+                    <th className="text-light">ProductName</th>
+                    <th  className="text-light">Brand</th>
+                    <th  className="text-light">Image</th>
                 </thead>
                 <tbody>
                     {cartObj &&
@@ -41,8 +31,8 @@ function UserCart(){
                         })
                     }
                 </tbody>
-            </table>
-            
+            </table> : <h1 className="mt-5 text-warning ">Cart is Empty!</h1>
+}
 
         </div>
     )

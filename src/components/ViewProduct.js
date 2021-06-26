@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
+import { useParams} from 'react-router-dom'
 import axios from 'axios'
-import { useHistory } from "react-router";
+//import { useHistory } from "react-router";
 
-export default function ViewProduct(){
+export default function ViewProduct(props){
 
-    let history=useHistory();
+    let addProductToCart=props.addProductToCart
+
+    let[userObj,setUserObj]=useState({});
+    let url=useParams();
+    let username=url.username;
+
+    //let history=useHistory();
+    
 
 
     let[product,setProduct]=useState([])
@@ -14,28 +22,18 @@ export default function ViewProduct(){
             let productObj=res.data
             setProduct([...productObj.message])
         })
-    },[])
+        setUserObj({...userObj})
+    },[username])
 
-    const addProductToCart=(productObj)=>{
-        let username=localStorage.getItem("username")
 
-        let newObj={username,productObj}
-        console.log(newObj)
 
-        axios.post("/user/addtocart",newObj)
-        .then(res=>{
-            let responseObj=res.data
-            alert(responseObj.message)
 
-            history.push("/UserCart")
-        })
-        .catch(err=>{
-            console.log("Error in adding to cart",err)
-            alert("Something went wrong")
-        })
-    }
 
-    console.log(product)
+    //this for button conditional rendering forn user and admin (if the card is in admin it should show the button as edit/delete)
+    let usertype=localStorage.getItem("username")
+
+
+    //console.log(product)
 
     return(
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
@@ -43,14 +41,25 @@ export default function ViewProduct(){
                 product.map((productObj,index)=>{
                     return(
                         <div class="col" key={index}>
-                            <div class="card w-50 mx-auto">
+                            <div class="card w-75 mx-auto mt-5">
                                 <img src={productObj.productImage} class="card-img-top" alt="..." />
                                 <div class="card-body">
-                                    <h5 class="card-title">{productObj.productname}</h5>
-                                    <h5 className="">{productObj.price}</h5>
-                                    <p class="card-text">{productObj.productdescription}</p>
+                                    <h5 class="card-title text-start">Name : {productObj.productname}</h5>
+                                    <h5 class="text-start">Price : {productObj.price}</h5>
+                                    <h5 class="text-start">Brand : {productObj.brand}</h5>
+                                    <h5 class="text-start">Description : {productObj.productdescription}</h5>
 
-                                    <button className="btn btn-primary float-end" onClick={()=>addProductToCart(productObj)}>Add to cart</button> 
+                                    {usertype !="admin" && 
+                                        <div class="d-flex float-end">
+                                            <button className="btn btn-primary float-end" onClick={()=>addProductToCart(productObj)}>Add to cart</button>  
+                                        </div>
+                                        ||
+                                        <div class="d-flex float-end">
+                                            <button className="btn btn-warning float-end">Edit/Delete</button>  
+                                        </div>
+
+                                    }
+
 
                                 </div>
                             </div>
