@@ -5,7 +5,7 @@ const path=require("path")
 require('dotenv').config()
 
 //connect frontend and backend
-app.use(exp.static(path.join(__dirname,'./build/')))
+app.use(exp.static(path.join(__dirname,'./dist/')))
 
 //imports apis
 const userApi=require("./APIS/user-api")
@@ -20,7 +20,7 @@ app.use("/admin",adminApi)
 //for page reload  error 
 app.get('/*', (req, res)=> {
     
-    res.sendFile(path.join(__dirname, 'build/index.html'), function(err) {
+    res.sendFile(path.join(__dirname, './dist/index.html'), function(err) {
       if (err) {
         res.status(500).send(err)
       }

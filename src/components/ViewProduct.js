@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams} from 'react-router-dom'
 import axios from 'axios'
-//import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
+import ProductDetails from "./ProductDetails";
+import {Link,Route,BrowserRouter,Switch} from 'react-router-dom'
+
 
 export default function ViewProduct(props){
 
@@ -11,7 +14,7 @@ export default function ViewProduct(props){
     let url=useParams();
     let username=url.username;
 
-    //let history=useHistory();
+    let history=useHistory();
     
 
 
@@ -25,6 +28,11 @@ export default function ViewProduct(props){
         setUserObj({...userObj})
     },[username])
 
+    const onCardClick=(productname)=>{
+        localStorage.setItem("productname",productname)
+        history.push('/productdetails')
+    }
+
 
 
 
@@ -36,13 +44,14 @@ export default function ViewProduct(props){
     //console.log(product)
 
     return(
+        <BrowserRouter>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
             {product &&
                 product.map((productObj,index)=>{
                     return(
                         <div class="col" key={index}>
                             <div class="card w-75 mx-auto mt-5">
-                                <img src={productObj.productImage} class="card-img-top" alt="..." />
+                                <Link to="/productdetails"><img src={productObj.productImage} class="card-img-top" alt="..."  onClick={()=>onCardClick(productObj.productname)}/></Link>
                                 <div class="card-body">
                                     <h5 class="card-title text-start">Name : {productObj.productname}</h5>
                                     <h5 class="text-start">Price : {productObj.price}</h5>
@@ -69,6 +78,12 @@ export default function ViewProduct(props){
 
             }
         </div>
+
+        <Route path="/productdetails">
+          <ProductDetails/>
+        </Route>
+        
+        </BrowserRouter>
     )
 }
 

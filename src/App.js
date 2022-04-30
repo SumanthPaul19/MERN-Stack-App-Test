@@ -5,6 +5,7 @@ import Register from './components/Register'
 import UserProfile from './components/UserProfile'
 import Test from './components/Test'
 import AdminProfile from './components/AdminProfile'
+//import ProductDetails from './components/ProductDetails'
 
 import './App.css';
 import {useState} from 'react'
@@ -15,7 +16,7 @@ function App() {
 
   const onLogout = () => {
     localStorage.clear();
-    setUserLoginState(false)
+    setUserLoginState(false) 
   }
   
   return (
@@ -47,6 +48,7 @@ function App() {
      </ul>
 
      {/*switch */}
+     
      <Switch>
         <Route path="/home">
           <Home />
@@ -70,6 +72,10 @@ function App() {
         <Route path='/adminprofile/:username'>
           <AdminProfile/>
         </Route>
+
+        {/* <Route path="/productdetails">
+          <ProductDetails/>
+        </Route> */}
         
         <Route path="/">
           <Redirect to="/home" />

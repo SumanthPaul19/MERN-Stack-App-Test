@@ -4,6 +4,7 @@ import {  useParams, useRouteMatch } from 'react-router-dom';
 import {BrowserRouter,Link,Switch,Route, Redirect} from 'react-router-dom'
 import UserCart from './UserCart';
 import ViewProduct from './ViewProduct';
+import ProductDetails from './ProductDetails';
 
 
 
@@ -87,9 +88,16 @@ export default function UserProfile(){
                     <Route path="/usercart">
                         <UserCart cartObj={cartObj} />
                     </Route>
+                    <Route path="/productdetails">
+                        <ProductDetails/>
+                    </Route>
+
                     <Route path="/">
                         <Redirect to="/viewproduct"/>
                     </Route>
+
+                    
+
                 </Switch>
             </BrowserRouter>
         </div>
